@@ -2,13 +2,9 @@
 using namespace std;
 
 bool solution(vector<string> pb) {
-    unordered_set<string> us(pb.begin(), pb.end());
-    for(auto& s : pb) {
-        string tmp = "";
-        for(int i = 0; i < s.size() - 1; i++) {
-            tmp += s[i];
-            if(us.find(tmp) != us.end()) return false;
-        }
+    sort(pb.begin(), pb.end());
+    for(int i = 0; i < pb.size() - 1; i++) {
+        if(pb[i] == pb[i + 1].substr(0, pb[i].size())) return false;
     }
-    return true;    
+    return true;
 }
