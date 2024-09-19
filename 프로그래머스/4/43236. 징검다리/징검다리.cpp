@@ -1,13 +1,12 @@
-#include <string>
-#include <vector>
-#include <algorithm>
+#include <bits/stdc++.h>
 using namespace std;
 
 int solution(int distance, vector<int> rocks, int n) {
-    rocks.emplace_back(distance);
 
+    rocks.emplace_back(distance);
     int size = rocks.size();
     sort(rocks.begin(), rocks.end()); 
+
     vector<int> dists(size);
     dists[0] = rocks[0];
     for(int i = 1; i < size; i++) {
