@@ -3,32 +3,43 @@ using namespace std;
 
 int solution(int n, vector<vector<int>> costs) {
     int answer = 0;
-    vector<vector<int>> bridge;
     
-    sort(costs.begin(), costs.end(), [&](vector<int>& v1, vector<int>& v2) {
-        if(v1[2] != v2[2]) return v1[2] < v2[2];
-        return v1[0] < v2[0];
-    });
+    vector<int> parent(n + 1), rank(n + 1, 0);
+    for(int i = 1; i <= n; i++) parent[i] = i;
     
-    function<bool(int, int)> isConnected = [&](int i1, int i2) -> bool {
-        vector<bool> island(n, false);
-        if(bridge.size() != 0) island[i1] = true;    
-        for(int i = 0; i < 5; i++) {
-            for(auto& v : bridge) {
-                if(island[v[0]] != island[v[1]]) {
-                    island[v[0]] = true;
-                    island[v[1]] = true;
-                }
-            }
-        }
-        return island[i2];
+    function<int(int)> FindParent = [&](int a) {
+        if(parent[a] == a) return a;
+        return parent[a] = FindParent(parent[a]);
     };
     
-    for(auto& v : costs) {
-        if(isConnected(v[0], v[1])) continue;
-        answer += v[2];
-        bridge.emplace_back(vector<int>({v[0], v[1]}));
-        if(bridge.size() == n - 1) break;
+    function<void(int, int)> SetUnion = [&](int x, int y) {
+        int rootX = FindParent(x);
+        int rootY = FindParent(y);
+        
+        if(rootX != rootY) {
+            if(rank[rootX] < rank[rootY]) parent[rootX] = rootY;
+            else if(rank[rootX] > rank[rootY]) parent[rootY] = rootX;
+            else {
+                parent[rootX] = rootY;
+                rank[rootX]++;
+            }
+        }
+    };
+    
+    function<bool(int, int)> IsSameUnion = [&](int x, int y) {
+        return FindParent(x) == FindParent(y);
+    };
+    
+    sort(costs.begin(), costs.end(), [&](vector<int>& vi1, vector<int>& vi2) {
+        return vi1[2] < vi2[2];
+    });
+    
+    for(auto& vi : costs) {
+        int a = vi[0], b = vi[1], cost = vi[2];
+        if(!IsSameUnion(a, b)) {
+            SetUnion(a, b);
+            answer += cost;
+        }        
     }
     return answer;
 }
