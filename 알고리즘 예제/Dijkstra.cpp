@@ -16,7 +16,7 @@ int main()
     }
 
     function<void(int)> Dijkstra = [&](int start) {
-        priority_queue<pair<int, int>, vector<pair<int, int>>,
+        priority_queue<pair<int, int>, vector<pair<int, int>>, 
             greater<pair<int, int>>> pq;
         dist[start] = 0;
         pq.push({0, start});
@@ -27,7 +27,7 @@ int main()
             pq.pop();
             if(dist[curNode] < curDist) continue;
 
-            for(auto& pii : graph[curNode]) {
+            for(auto pii : graph[curNode]) {
                 int nxtNode, weight;
                 tie(nxtNode, weight) = pii;
 
@@ -44,7 +44,7 @@ int main()
     Dijkstra(start);
 
     for(int i = 1; i <= V; i++) {
-        if(dist[i] == INT_MAX) cout << "INF\n";
+        if(dist[i] == INT_MAX) cout << "INF\n"; 
         else cout << dist[i] << "\n";
     }
 }
